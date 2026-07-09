@@ -1,0 +1,43 @@
+name: Test News Sites Access
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-sites:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check website accessibility
+        run: |
+          python - <<'PY'
+          import requests
+
+          sites = [
+              "https://tamil.adaderana.lk",
+              "https://www.itnnews.lk/ta",
+              "https://www.tamilmirror.lk",
+              "https://www.virakesari.lk",
+          ]
+
+          for site in sites:
+              try:
+                  r = requests.get(
+                      site,
+                      headers={"User-Agent": "Mozilla/5.0"},
+                      timeout=20,
+                  )
+
+                  print(f"{site}")
+                  print(f"Status code: {r.status_code}")
+                  print(f"Content length: {len(r.text)}")
+                  print("-" * 50)
+
+              except Exception as e:
+                  print(f"{site}")
+                  print(f"Error: {e}")
+                  print("-" * 50)
+          PY
